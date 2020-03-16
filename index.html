@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search List</title>
+</head>
+<body>
+    <div class="form">
+        <form action="">
+            <div class="form-group">
+                <label for="List">List</label>
+                <input type="text" name="list" id="list" value="10,14,19,26,27,31,33,35,42,44" onkeyup="this.value = this.value.replace(/[^0-9,]/g, '').replace(/(\..*)\./g, '$1');">
+            </div>
+            <div class="form-group">
+                <label for="search">ค้นหา</label>
+                <input type="text" name="search" id="search" onkeyup="this.value = this.value.replace(/[^0-9,]/g, '').replace(/(\..*)\./g, '$1');">
+                <button type="button" onclick="handleSearch(this.form)">Search</button>
+            </div>
+            <div class="form-group">
+               <p>ประเภทการค้นหา</p>
+               <select name="type" id="type">
+                    <option value="linear">Linear Search</option>
+                    <option value="binary">Binary Search</option>
+                    <option value="bubble">Bubble Search</option>
+               </select>
+            </div>
+        </form>
+        <div id="result">
+        </div>
+    </div>
+</body>
+<style>
+    body {
+        min-height: 100vh;
+        width:100%;
+        padding:0;
+        margin:0;
+        justify-content:center;
+        align-items:center;
+        display:flex;
+    }
+    .form{
+        padding:15px;
+        max-width:500px;
+        width:100%;
+        min-height:200px;
+        border: solid #444 1px;
+    }
+    #result{
+        width:100%;
+        min-height:100px;
+        border: solid #444 1px;
+        text-align:center;
+        margin-top:15px;
+    }
+    .form-group{
+        margin:10px;
+    }
+    input {
+        width:100%;
+        height:20px;
+    }
+    label {
+            min-width:50px;
+        }
+</style>
+
+<script>
+    var result = document.getElementById('result');
+    var resultText = document.createElement("P");
+    var searchText = document.createElement("P");
+    const handleSearch = (e) =>{
+        var list = document.getElementById("list").value;
+        var value = document.getElementById("search").value;
+        var type = document.getElementById("type").value;
+
+        result.innerHTML = '';
+        switch (type) {
+            case 'linear':
+                linearSearch(list, value);
+                break;
+            case 'binary':
+                binarySearch(list, value);
+                break;
+            case 'bubble':
+                bubbleSearch(list, value);
+                break;
+            default:
+                break;
+        }
+    }
+    const linearSearch = (list=array(), value) =>{
+        resultText.innerText = "Result : [ "+ list +" ]";
+        searchText.innerText = "Search : "+ value;
+        result.appendChild(resultText);
+        result.appendChild(searchText);
+
+        listArray = list.split(',').map(Number);
+        var no = 0;
+        for (let index = 0; index < listArray.length; index++) {
+            var resText = document.createElement("P");
+            if (listArray[index] == value)
+            {
+                resText.innerText = "Round : " + ++no +" ===>" + value +" found";
+                result.appendChild(resText);
+                break;
+            }else{
+                resText.innerText = "Round : " + ++no +" ===>" + value +"!=" + listArray[index];
+                result.appendChild(resText);
+            }
+            
+        }
+        listArray.forEach((element, key) => {
+        });
+    }
+
+    const binarySearch = (list=array(), value) =>{
+        listArray = list.split(',').map(Number);
+        listArray = listArray.sort(function(a, b){return a - b});
+        resultText.innerText = "Result : [ "+ listArray +" ]";
+        searchText.innerText = "Search : "+ value;
+        result.appendChild(resultText);
+        result.appendChild(searchText);
+
+        var Low = Math.min.apply(Math, listArray);
+        var High = Math.max.apply(Math, listArray);
+        var no = 0;
+        if (value <= High && value >= Low) 
+        {
+            do {
+                var resText = document.createElement("P");
+                Mid = (Low + High) / 2;
+                value > Mid ? Low = parseInt(Mid) + 1 : High = parseInt(Mid) - 1;
+                value != Mid ? resText.innerText = "Round : " + ++no +" ===>" + value +" != Mid "+ parseInt(Mid)  : resText.innerText = "Round : " + ++no +" ===>" + value +" found";
+                result.appendChild(resText);
+            }
+            while (parseInt(Mid) != value);
+        }else{
+            var resText = document.createElement("P");
+            resText.innerText = "Value Minimum is " + Low +" Value Maximum is"+  High; 
+            result.appendChild(resText);
+
+        }
+
+    }
+    
+    const bubbleSearch = (list=array(), value) => {
+        listArray = list.split(',').map(Number);
+        resultText.innerText = "Result : [ "+ listArray +" ]";
+        searchText.innerText = "Search : "+ value;
+        result.appendChild(resultText);
+        result.appendChild(searchText);
+        var swap , no = 0;
+
+        var listText = document.createElement("P");
+
+        for (let index = 0; index < listArray.length; index++) {
+            var resText = document.createElement("P");
+            if (value == listArray[index])
+            {
+                resText.innerText = "Round : " + ++no +" ===>" + value +" found";
+                result.appendChild(resText);
+
+                break;
+            }
+
+            if (value != listArray[index+1] && listArray[index+1] !== undefined){
+                swap = listArray[index+1];
+                listArray[index+1] = listArray[index];
+                listArray[index] = swap;
+                resText.innerText = "Round : " + ++no +" ===>" + value +" != "+ swap;
+                result.appendChild(resText);
+
+            }else{
+                if (listArray[index+1] === undefined)
+                {
+                    resText.innerText = "In the array, there is no data equal to the value";
+                    listText.innerText = '[ '+listArray+' ]';
+                    result.appendChild(resText);
+                    result.appendChild(listText);
+                    break;
+
+                }
+                resText.innerText = "Round : " + ++no +" ===>" + value +" found";
+                listText.innerText = '[ '+listArray+' ]';
+                result.appendChild(resText);
+                result.appendChild(listText);
+
+                break;
+            }
+            
+        }
+    }
+
+</script>
+</html>
